@@ -5,8 +5,13 @@ class ShowExpenses extends React.Component {
     const expense = this.props.expense;
     return (
       <div>
-        <h1>Expense: {expense.item}</h1>
         <table className="table table-warning">
+          <thead className="thead-dark">
+          <tr>
+            <th>{expense.item}</th>
+            <th></th>
+          </tr>
+          </thead>
           <tbody>
             <tr>
               <th>Date</th>
@@ -28,15 +33,11 @@ class ShowExpenses extends React.Component {
               <th>Cost</th>
               <td>{expense.cost}</td>
             </tr>
-            <tr>
-              <th>Total</th>
-              <td>{expense.total}</td>
-            </tr>
           </tbody>
         </table>
-        <button className="btn btn-info" onClick={this.props.handleBack}>
-          Cancel
-        </button>
+        <button className="btn btn-info" onClick={this.props.handleBack}>Cancel</button>
+        <button className="btn btn-danger pull-right" onClick={() => {this.DeleteExpense(expense._id)}}>Delete</button>
+        <button className="btn btn-info pull-right" onClick={() => {this.EditExpense(expense._id)}}>Edit</button>
       </div>
     );
   }

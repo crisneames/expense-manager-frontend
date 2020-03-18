@@ -25,7 +25,20 @@ class NewExpenses extends React.Component {
       cost: this.state.cost,
       total: this.state.total
     };
-    console.log(expense);
+
+    if (!expense.date) {
+      alert("Date cannot be empty");
+      return;
+    }
+    if (!expense.item) {
+      alert("Item cannot be empty");
+      return;
+    }
+    if (!expense.cost) {
+      alert("Cost cannot be empty");
+      return;
+    }
+
     this.setState({
       date: "",
       item: "",
@@ -70,14 +83,14 @@ class NewExpenses extends React.Component {
             <tr>
               <th>Description</th>
               <td>
-                <input
-                  type="text"
+                <textarea
+                  type="text-area"
                   id="description"
                   name="description"
                   onChange={this.handleChange}
                   value={this.state.description}
                   placeholder="Add Description"
-                />
+                ></textarea>
               </td>
             </tr>
             <tr>
@@ -86,15 +99,13 @@ class NewExpenses extends React.Component {
                 <input type="number" id="cost" name="cost" onChange={this.handleChange} value={this.state.cost} placeholder="Add Cost" />
               </td>
             </tr>
-            <tr>
-              <td>
-              <button className="btn btn-info btn-right" onClick={this.handleSubmit}>
-                Add new expense
-              </button>
-              </td>
-            </tr>
           </tbody>
         </table>
+        <div>
+          <button className="btn btn-info btn-right" onClick={this.handleSubmit}>
+            Add new expense
+          </button>
+        </div>
       </div>
     );
   }
