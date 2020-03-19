@@ -12,14 +12,13 @@ if (process.env.NODE_ENV === "development") {
 
 class BarChart extends Component {
 
-  componentDidMount () {
+  componentDidUpdate () {
      this.getData()
   }
+
   getData() {
-    fetch(baseURL +'/')
-      .then(response => response.json())
-      .then(jData => this.prepareData(jData))
-      .then(data => this.createChart(data))
+    const chartData = this.prepareData(this.props.expenses)
+    this.createChart(chartData)
   }
   prepareData (data) {
     const chartData = {
@@ -35,7 +34,7 @@ class BarChart extends Component {
             }
         ]
     }
-
+    data=data || []
     data.forEach(expense => {
         chartData.labels.push(expense.date)
         chartData.datasets[0].data.push(expense.cost)

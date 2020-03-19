@@ -38,6 +38,20 @@ class App extends React.Component {
     this.showExpenses = this.showExpenses.bind(this);
   }
 
+  componentDidMount () {
+     this.getData()
+  }
+  getData() {
+    fetch(baseURL +'/')
+      .then(response => response.json())
+      .then(jData => {
+        this.setState({
+          expenses: jData.sort((a,b) => Date.parse(a.date)- Date.parse(b.date))
+        })
+      })
+
+  }
+
   handleChange(event) {
     this.setState({ [event.target.id]: event.target.value });
   }
@@ -62,7 +76,7 @@ class App extends React.Component {
       const newExpense = await response.json();
       const newData = [newExpense, ...this.state.expenses];
       this.setState({
-        expenses: newData,
+        expenses: newData.sort((a,b) => Date.parse(a.date)- Date.parse(b.date)),
         total: this.state.total + Number(expense.cost)
       });
     } catch (e) {
@@ -129,7 +143,7 @@ class App extends React.Component {
     return (
       <div className="container main-page">
         <h1>Expense Manager</h1>
-        <BarChart />
+        <BarChart expenses={this.state.expenses} />
         {this.state.addExpense ? (
           <NewExpenses handleExpenseAdded={this.handleExpenseAdded} data={this.state.data} handleCancel={this.handleCancel} />
         ) : this.state.showExpenses ? (
