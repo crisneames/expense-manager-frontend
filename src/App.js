@@ -1,7 +1,8 @@
 import React from "react";
 import CurrencyFormat from "react-currency-format";
-import NewExpenses from "./components/NewExpenses.js";
-import ShowExpenses from "./components/ShowExpenses";
+import NewExpenses from "./components/newExpenses";
+import ShowExpenses from "./components/showExpenses";
+import EditExpenses from "./components/editExpenses";
 
 import "./App.css";
 
@@ -24,9 +25,12 @@ class App extends React.Component {
       expenses: []
     };
 
+
     this.handleExpenseAdded = this.handleExpenseAdded.bind(this);
     this.handleCancel = this.handleCancel.bind(this);
     this.handleAddExpense = this.handleAddExpense.bind(this);
+    this.handleEditExpense = this.handleEditExpense.bind(this);
+    this.deleteExpense = this.deleteExpense.bind(this);
     this.showExpenses = this.showExpenses.bind(this);
   }
 
@@ -52,6 +56,22 @@ class App extends React.Component {
       console.error(e);
     }
   }
+  async handleEditExpense(expense) {
+      this.setState({ });
+      try {
+          let response = await fetch(baseURL + '/expense/' + expense._id, {
+              method: 'PUT',
+              body: JSON.stringify({expense}),
+              headers: {
+                  'Content-Type': 'application/json'
+              }
+          })
+          let updatedExpense = await response.json()
+          const foundExpense = this.state.expenses.findIndex(foundExpense)
+      } catch(e){
+          
+      }
+  }
 
   showExpenses(event, index) {
     event.preventDefault();
@@ -61,6 +81,27 @@ class App extends React.Component {
       selectedExpense: expense
     });
   }
+
+  async deleteExpense (id, i){
+      alert('Noooooooo!')
+     console.log('I made a delete request to here:', `${baseURL}/expense/${id}`)
+     try{
+     // let response = await fetch(baseURL + '/expense/' + id, {
+     //     method: 'DELETE'
+     // })
+     // let data = await response.json()
+     // console.log(data);
+     const foundExpense = i
+          // this.state.expenses.findIndex(expense =>
+          // expense._id === id)
+          const copyExpenses =
+          [...this.state.expenses]
+          copyExpenses.splice(foundExpense, 1)
+          this.setState({expenses: copyExpenses})
+     } catch(e){
+         console.error(e);
+     }
+     }
 
   handleCancel() {
     this.setState({
@@ -122,9 +163,9 @@ class App extends React.Component {
                           <button
                             className="btn btn-danger"
                             onClick={() => {
-                              this.deleteExpense(expense._id);
-                            }}
-                          >
+                                console.log(i);
+                              this.deleteExpense(expense._id, i);
+                          }}>
                             <i className="fa fa-trash"></i>
                           </button>
                         </td>
