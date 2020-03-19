@@ -1,10 +1,8 @@
 import React from "react";
-import BarChart from './components/BarChart.js'
+import BarChart from "./components/BarChart.js";
 import CurrencyFormat from "react-currency-format";
-import NewExpenses from "./components/newExpenses";
+import NewExpenses from "./components/NewExpenses";
 import ShowExpenses from "./components/showExpenses";
-import EditExpenses from "./components/editExpenses";
-
 
 import "./App.css";
 
@@ -14,8 +12,7 @@ if (process.env.NODE_ENV === "development") {
 } else {
   baseURL = "https://fathomless-sierra-68956.herokuapp.com";
 }
-  baseURL = "https://expense-manager-one-backend.herokuapp.com/expense"
-
+baseURL = "https://expense-manager-one-backend.herokuapp.com/expense";
 
 // console.log("current base URL:", baseURL);
 
@@ -29,7 +26,6 @@ class App extends React.Component {
       expenses: []
     };
 
-
     this.handleExpenseAdded = this.handleExpenseAdded.bind(this);
     this.handleCancel = this.handleCancel.bind(this);
     this.handleAddExpense = this.handleAddExpense.bind(this);
@@ -38,18 +34,24 @@ class App extends React.Component {
     this.showExpenses = this.showExpenses.bind(this);
   }
 
-  componentDidMount () {
-     this.getData()
+  componentDidMount() {
+    this.getData();
   }
+
   getData() {
-    fetch(baseURL +'/')
+    fetch(baseURL + "/")
       .then(response => response.json())
       .then(jData => {
-        this.setState({
-          expenses: jData.sort((a,b) => Date.parse(a.date)- Date.parse(b.date))
-        })
-      })
+        let total = 0;
+        for (let expense of jData) {
+          total += Number(expense.cost);
+        }
 
+        this.setState({
+          expenses: jData.sort((a, b) => Date.parse(a.date) - Date.parse(b.date)),
+          total: total
+        });
+      });
   }
 
   handleChange(event) {
@@ -65,7 +67,6 @@ class App extends React.Component {
   async handleExpenseAdded(expense) {
     this.setState({ addExpense: false });
     try {
-
       let response = await fetch(baseURL + "/", {
         method: "POST",
         body: JSON.stringify(expense),
@@ -76,28 +77,26 @@ class App extends React.Component {
       const newExpense = await response.json();
       const newData = [newExpense, ...this.state.expenses];
       this.setState({
-        expenses: newData.sort((a,b) => Date.parse(a.date)- Date.parse(b.date)),
+        expenses: newData.sort((a, b) => Date.parse(a.date) - Date.parse(b.date)),
         total: this.state.total + Number(expense.cost)
       });
     } catch (e) {
       console.error(e);
     }
   }
-  async handleEditExpense(expense) {
-      this.setState({ });
-      try {
-          let response = await fetch(baseURL + '/expense/' + expense._id, {
-              method: 'PUT',
-              body: JSON.stringify({expense}),
-              headers: {
-                  'Content-Type': 'application/json'
-              }
-          })
-          let updatedExpense = await response.json()
-          const foundExpense = this.state.expenses.findIndex(foundExpense)
-      } catch(e){
 
-      }
+  async handleEditExpense(expense) {
+    this.setState({});
+    try {
+      let response = await fetch(baseURL + "/expense/" + expense._id, {
+        method: "PUT",
+        body: JSON.stringify({ expense }),
+        headers: {
+          "Content-Type": "application/json"
+        }
+      });
+      const foundExpense = this.state.expenses.findIndex(foundExpense);
+    } catch (e) {}
   }
 
   showExpenses(event, index) {
@@ -109,26 +108,29 @@ class App extends React.Component {
     });
   }
 
-  async deleteExpense (id, i){
-      alert('Noooooooo!')
-     console.log('I made a delete request to here:', `${baseURL}/expense/${id}`)
-     try{
-     // let response = await fetch(baseURL + '/expense/' + id, {
-     //     method: 'DELETE'
-     // })
-     // let data = await response.json()
-     // console.log(data);
-     const foundExpense = i
-          // this.state.expenses.findIndex(expense =>
-          // expense._id === id)
-          const copyExpenses =
-          [...this.state.expenses]
-          copyExpenses.splice(foundExpense, 1)
-          this.setState({expenses: copyExpenses})
-     } catch(e){
-         console.error(e);
-     }
-     }
+  async deleteExpense(id, i) {
+    alert("Noooooooo!");
+    console.log("I made a delete request to here:", `${baseURL}/expense/${id}`);
+    try {
+      // let response = await fetch(baseURL + '/expense/' + id, {
+      //     method: 'DELETE'
+      // })
+      // let data = await response.json()
+      // console.log(data);
+      const foundExpense = i;
+      // this.state.expenses.findIndex(expense =>
+      // expense._id === id)
+      const expense = this.state.expenses[i];
+      const copyExpenses = [...this.state.expenses];
+      copyExpenses.splice(foundExpense, 1);
+      this.setState({
+        expenses: copyExpenses,
+        total: this.state.total - expense.cost
+      });
+    } catch (e) {
+      console.error(e);
+    }
+  }
 
   handleCancel() {
     this.setState({
@@ -143,15 +145,15 @@ class App extends React.Component {
     return (
       <div className="container main-page">
         <h1>Expense Manager</h1>
-        <BarChart expenses={this.state.expenses} />
         {this.state.addExpense ? (
           <NewExpenses handleExpenseAdded={this.handleExpenseAdded} data={this.state.data} handleCancel={this.handleCancel} />
         ) : this.state.showExpenses ? (
           <ShowExpenses expense={this.state.selectedExpense} handleBack={this.handleCancel} />
         ) : (
           <div>
+            <BarChart expenses={this.state.expenses} />
             <div className="main-list">
-              <table className="table table-warning">
+              <table className="table table-info">
                 <thead className="thead-dark">
                   <tr>
                     <th>Date</th>
@@ -163,45 +165,48 @@ class App extends React.Component {
                   </tr>
                 </thead>
                 <tbody>
-                  {this.state.expenses.sort((a,b) => Date.parse(a.date)- Date.parse(b.date)).map((expense, i) => {
-                    const currentIndex = i;
-                    return (
-                      <tr>
-                        <td>
-                          <a href="#show" onClick={event => this.showExpenses(event, currentIndex)}>
-                            {expense.date}
-                          </a>
-                        </td>
-                        <td>{expense.item}</td>
-                        <td>{expense.category}</td>
-                        <td>
-                          <CurrencyFormat displayType="text" thousandSeparator={true} prefix={"$"} value={expense.cost} />
-                        </td>
-                        <td className="text-right mb-3">
-                          <button
-                            className="btn btn-info"
-                            onClick={() => {
-                              this.handleEditExpense();
-                            }}
-                          >
-                            <i className="fa fa-edit"></i>
-                          </button>
+                  {this.state.expenses
+                    .sort((a, b) => Date.parse(a.date) - Date.parse(b.date))
+                    .map((expense, i) => {
+                      const currentIndex = i;
+                      return (
+                        <tr key={expense._id}>
+                          <td>{expense.date}</td>
+                          <td>
+                            <a href="#show" onClick={event => this.showExpenses(event, currentIndex)}>
+                              {expense.item}
+                            </a>
+                          </td>
+                          <td>{expense.category}</td>
+                          <td>
+                            <CurrencyFormat displayType="text" thousandSeparator={true} prefix={"$"} value={expense.cost} />
+                          </td>
+                          <td className="text-right mb-3">
+                            <button
+                              className="btn btn-info"
+                              onClick={() => {
+                                this.handleEditExpense();
+                              }}
+                            >
+                              <i className="fa fa-edit"></i>
+                            </button>
                           </td>
                           <td>
-                          <button
-                            className="btn btn-danger"
-                            onClick={() => {
+                            <button
+                              className="btn btn-danger"
+                              onClick={() => {
                                 console.log(i);
-                              this.deleteExpense(expense._id, i);
-                          }}>
-                            <i className="fa fa-trash"></i>
-                          </button>
-                        </td>
-                      </tr>
-                    );
-                  })}
+                                this.deleteExpense(expense._id, i);
+                              }}
+                            >
+                              <i className="fa fa-trash"></i>
+                            </button>
+                          </td>
+                        </tr>
+                      );
+                    })}
                 </tbody>
-                <tfoot className="bg-warning font-weight-bolder">
+                <tfoot className="bg-secondary font-weight-bolder">
                   <tr>
                     <td colSpan="3">Total Expenditure:</td>
                     <td>

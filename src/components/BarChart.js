@@ -1,63 +1,64 @@
-import React, { Component } from 'react';
-import Chart from 'chart.js'
-
-let baseURL = process.env.REACT_APP_BASEURL;
-if (process.env.NODE_ENV === "development") {
-  baseURL = "http://localhost:3003";
-} else {
-  baseURL = "https://fathomless-sierra-68956.herokuapp.com";
-}
-  baseURL = "https://expense-manager-one-backend.herokuapp.com/expense"
-
+import React, { Component } from "react";
+import Chart from "chart.js";
 
 class BarChart extends Component {
+  componentDidMount() {
+    if (this.props.expenses && this.props.expenses.length) {
+      this.getData();
+    }
+  }
 
-  componentDidUpdate () {
-     this.getData()
+  componentDidUpdate() {
+    this.getData();
   }
 
   getData() {
-    const chartData = this.prepareData(this.props.expenses)
-    this.createChart(chartData)
+    const chartData = this.prepareData(this.props.expenses);
+    this.createChart(chartData);
   }
-  prepareData (data) {
+
+  prepareData(data) {
     const chartData = {
-        labels: [],
-        datasets: [
-            {
-                label: 'Avg high expenses',
-                data: []
-            },
-            {
-              label: 'Avg low expenses',
-              data:[]
-            }
-        ]
-    }
-    data=data || []
+      labels: [],
+      datasets: [
+        {
+          label: "Avg high expenses",
+          data: []
+        },
+        {
+          label: "Avg low expenses",
+          data: []
+        }
+      ]
+    };
+    data = data || [];
     data.forEach(expense => {
-        chartData.labels.push(expense.date)
-        chartData.datasets[0].data.push(expense.cost)
-    })
-    return chartData
-}
-createChart (data) {
-    const ctx = document.querySelector('#expenses')
-    new Chart(ctx, {
-        type: 'line',
-        data: data,
-    })
-}
+      chartData.labels.push(expense.date);
+      chartData.datasets[0].data.push(expense.cost);
+    });
 
+    return chartData;
+  }
 
-  render () {
+  createChart(data) {
+    const canvas = document.querySelector("#expenses");
+    const context = canvas.getContext('2d');
+    
+    context.clearRect(0, 0, canvas.width, canvas.height);
+
+    new Chart(canvas, {
+      type: "line",
+      data: data
+    });
+  }
+
+  render() {
     return (
-      <>
-        <h1>Expenses</h1>
+      <div className="bg-light font-weight-bolder">
         <canvas id="expenses" width="300" height="100"></canvas>
-      </>
-    )
+      </div>
+    );
   }
 }
 
-export default BarChart
+export default BarChart;

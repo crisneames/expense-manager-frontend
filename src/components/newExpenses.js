@@ -53,7 +53,7 @@ class NewExpenses extends React.Component {
   render() {
     return (
       <div>
-        <table className="table table-warning">
+        <table className="table table-info">
           <tbody>
             <tr>
               <th>Date</th>
