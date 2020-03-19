@@ -1,6 +1,6 @@
-<<<<<<< HEAD
 
-=======
+
+
 import React from "react";
 
 class ShowExpenses extends React.Component {
@@ -47,4 +47,3 @@ class ShowExpenses extends React.Component {
 }
 
 export default ShowExpenses;
->>>>>>> d479ebcb87658bc9c5cac13490084b1fc2e30b03

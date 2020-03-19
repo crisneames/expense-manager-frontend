@@ -1,7 +1,8 @@
 import React from "react";
+import BarChart from './components/BarChart.js'
 import CurrencyFormat from "react-currency-format";
-import NewExpenses from "./components/NewExpenses.js";
-import ShowExpenses from "./components/ShowExpenses";
+import NewExpenses from "./components/newExpenses.js";
+import ShowExpenses from "./components/showExpenses";
 
 import "./App.css";
 
@@ -11,6 +12,8 @@ if (process.env.NODE_ENV === "development") {
 } else {
   baseURL = "https://fathomless-sierra-68956.herokuapp.com";
 }
+  baseURL = "https://expense-manager-one-backend.herokuapp.com/expense"
+
 
 // console.log("current base URL:", baseURL);
 
@@ -40,10 +43,19 @@ class App extends React.Component {
     });
   }
 
-  handleExpenseAdded(expense) {
+  async handleExpenseAdded(expense) {
     this.setState({ addExpense: false });
     try {
-      const newData = [expense, ...this.state.expenses];
+
+      let response = await fetch(baseURL + "/", {
+        method: "POST",
+        body: JSON.stringify(expense),
+        headers: {
+          "Content-Type": "application/json"
+        }
+      });
+      const newExpense = await response.json();
+      const newData = [newExpense, ...this.state.expenses];
       this.setState({
         expenses: newData,
         total: this.state.total + Number(expense.cost)
@@ -75,6 +87,7 @@ class App extends React.Component {
     return (
       <div className="container main-page">
         <h1>Expense Manager</h1>
+        <BarChart />
         {this.state.addExpense ? (
           <NewExpenses handleExpenseAdded={this.handleExpenseAdded} data={this.state.data} handleCancel={this.handleCancel} />
         ) : this.state.showExpenses ? (
@@ -83,7 +96,7 @@ class App extends React.Component {
           <div>
             <div className="main-list">
               <table className="table table-warning">
-                <thead class="thead-dark">
+                <thead className="thead-dark">
                   <tr>
                     <th>Date</th>
                     <th>Item</th>
