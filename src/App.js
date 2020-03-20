@@ -89,30 +89,32 @@ class App extends React.Component {
   }
 
   async handleEditSubmit(expense) {
-      this.setState({
-          foundExpense: expense
-       });
-      // try {
-      //     let response = await fetch(`${baseURL}/expense/${bookmark._id}`, {
-      //   body: JSON.stringify(expense),
-      //   method: 'PUT',
-      //   headers: {
-      //     'Accept': 'application/json, text/plain, */*',
-      //     'Content-Type': 'application/json'
-      //   }
-      // })
-      //     // const updatedData = [...this.state.expenses];
-      //     //   // const foundExpense =
-      //     //   //   this.state.expenses.findIndex(expense =>
-      //     //   //   expense._id === id)
-      //         const copyExpenses =
-      //          [...this.state.expenses]
-      //          copyExpenses[foundExpense] = updatedData
-      //          console.log(updatedData)
-      //          this.setState(expense)
-      //   }catch(e){
-      //       console.error(e)
-      //   }
+      try {
+          let response = await fetch(`${baseURL}/${expense._id}`, {
+        body: JSON.stringify(expense),
+        method: 'PUT',
+        headers: {
+          'Accept': 'application/json, text/plain, */*',
+          'Content-Type': 'application/json'
+        }
+      })
+          const updatedExpense = await response.json()
+          const copyExpenses =
+           [...this.state.expenses]
+           const foundIndex =
+             copyExpenses.findIndex(e =>
+             e._id === expense._id)
+          const oldExpense = copyExpenses [foundIndex]
+          copyExpenses[foundIndex] = updatedExpense
+            this.setState({
+                editExpense: false,
+                selectedExpense: null,
+                expenses: copyExpenses,
+                total: this.state.total - oldExpense.cost + updatedExpense.cost
+            })
+        }catch(e){
+            console.error(e)
+        }
     }
 
 
@@ -176,7 +178,7 @@ class App extends React.Component {
         ) : this.state.showExpenses ? (
           <ShowExpenses expense={this.state.selectedExpense} handleBack={this.handleCancel} />
       ) : this.state.editExpense ? (
-          <EditExpense expense={this.state.selectedExpense} handleCancel={this.handleCancel} handleSubmit={this.handleEditExpense} />
+          <EditExpense expense={this.state.selectedExpense} handleCancel={this.handleCancel} handleSubmit={this.handleEditSubmit} />
       ) : (
           <div>
             <BarChart expenses={this.state.expenses} />

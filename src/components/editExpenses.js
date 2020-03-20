@@ -23,16 +23,18 @@ export default class EditExpense extends React.Component {
     handleSubmit(event) {
         event.preventDefault()
         const expense = {
+            ...this.props.expense,
             date: this.state.date,
             item: this.state.item,
             category: this.state.category,
             description: this.state.description,
             cost: this.state.cost
         }
+        console.log(expense);
+        this.props.handleSubmit(expense)
 }
 
     render() {
-        const expense = this.props.expense;
         return (
             <div>
             <table className="table table-warning">
@@ -83,7 +85,7 @@ export default class EditExpense extends React.Component {
                 </tr>
               </tbody>
             </table>
-              <button className="btn btn-info btn-right" onClick={this.handleEditExpense}>
+              <button className="btn btn-info btn-right" onClick={this.handleSubmit}>
                 Update Expense
               </button>
               <button className="btn btn-info" onClick={this.props.handleCancel}>Cancel</button>
