@@ -6,7 +6,7 @@ class ShowExpenses extends React.Component {
     const expense = this.props.expense;
     return (
       <div>
-        <table className="table table-warning">
+        <table className="table table-info">
           <thead className="thead-dark">
           <tr>
             <th>{expense.item}</th>
