@@ -175,7 +175,7 @@ class App extends React.Component {
           <NewExpenses handleExpenseAdded={this.handleExpenseAdded} data={this.state.data} handleCancel={this.handleCancel} />
         ) : this.state.showExpenses ? (
           <ShowExpenses expense={this.state.selectedExpense} handleBack={this.handleCancel} />
-      ) : this.state.editExpenses ? (
+      ) : this.state.editExpense ? (
           <EditExpense expense={this.state.selectedExpense} handleCancel={this.handleCancel} handleSubmit={this.handleEditExpense} />
       ) : (
           <div>
@@ -212,8 +212,8 @@ class App extends React.Component {
                           <td className="text-right mb-3">
                             <button
                               className="btn btn-info"
-                              onClick={() => {
-                                this.handleEditExpense();
+                              onClick={event => {
+                                this.editExpense(event, i);
                               }}
                             >
                               <i className="fa fa-edit"></i>

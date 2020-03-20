@@ -4,21 +4,17 @@ export default class EditExpense extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            date: this.props.currentExpenses.date,
-            item: this.props.currentExpenses.item,
-            category: this.props.currentExpenses.category,
-            description: this.props.currentExpenses.description,
-            cost: this.props.currentExpenses.cost
+            date: this.props.expense.date,
+            item: this.props.expense.item,
+            category: this.props.expense.category,
+            description: this.props.expense.description,
+            cost: this.props.expense.cost
         };
 
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
     }
-    // componentDidMount(){
-    //     this.props.currentExpense.map(expense => {
-    //         this.state.expenses.push(expense)
-    //     })
-    // }
+
 
     handleChange(event) {
         this.setState({ [event.currentTarget.id]: event.currentTarget.value });
@@ -34,21 +30,6 @@ export default class EditExpense extends React.Component {
             cost: this.state.cost
         }
 }
-        handleEditExpense() {
-
-            this.state.expenses = [...this.state.expenses]
-                const expense = {
-                      date: this.state.date,
-                      item: this.state.item,
-                      category: this.state.category,
-                      description: this.state.description,
-                      cost: this.state.cost
-                  };
-                  this.props.editExpense(expense) ;
-
-              } catch(e){
-                  console.error(e)
-              }
 
     render() {
         const expense = this.props.expense;
@@ -103,9 +84,9 @@ export default class EditExpense extends React.Component {
               </tbody>
             </table>
               <button className="btn btn-info btn-right" onClick={this.handleEditExpense}>
-                Edit expense
+                Update Expense
               </button>
-              <button className="btn btn-info" onClick={this.props.handleBack}>Cancel</button>
+              <button className="btn btn-info" onClick={this.props.handleCancel}>Cancel</button>
           </div>
         )
     }
