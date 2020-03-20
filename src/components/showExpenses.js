@@ -37,8 +37,9 @@ class ShowExpenses extends React.Component {
           </tbody>
         </table>
         <button className="btn btn-info" onClick={this.props.handleBack}>Cancel</button>
-        <button className="btn btn-danger pull-right" onClick={() => {this.props.deleteExpense(expense._id)}}>Delete</button>
-        <button className="btn btn-info pull-right" onClick={() => {this.props.EditExpense(expense._id)}}>Edit</button>
+        <button className="btn btn-danger pull-right" onClick={(event) => {event.preventDefault(); this.props.handleDelete(expense)}}>Delete</button>
+        <button className="btn btn-info pull-right" onClick={(event) =>
+            { event.preventDefault(); this.props.handleEdit()}}>Edit</button>
       </div>
     );
   }
