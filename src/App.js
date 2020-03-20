@@ -22,6 +22,7 @@ class App extends React.Component {
       total: 0,
       addExpense: false,
       showExpenses: false,
+      editExpense: false,
       expenses: []
     };
 
@@ -30,6 +31,7 @@ class App extends React.Component {
     this.handleCancel = this.handleCancel.bind(this);
     this.handleAddExpense = this.handleAddExpense.bind(this);
     this.handleEditExpense = this.handleEditExpense.bind(this);
+    this.editExpense = this.editExpense.bind(this);
     this.deleteExpense = this.deleteExpense.bind(this);
     this.showExpenses = this.showExpenses.bind(this);
   }
@@ -56,22 +58,34 @@ class App extends React.Component {
       console.error(e);
     }
   }
-  async handleEditExpense(expense) {
-      this.setState({ });
+
+  async handleEditSubmit(expense) {
+      this.setState({
+          foundExpense: expense
+       });
       try {
-          let response = await fetch(baseURL + '/expense/' + expense._id, {
-              method: 'PUT',
-              body: JSON.stringify({expense}),
-              headers: {
-                  'Content-Type': 'application/json'
-              }
-          })
-          let updatedExpense = await response.json()
-          const foundExpense = this.state.expenses.findIndex(foundExpense)
-      } catch(e){
-          
-      }
-  }
+          let response = await fetch(`${baseURL}/expense/${bookmark._id}`, {
+        body: JSON.stringify(bookmark),
+        method: 'PUT',
+        headers: {
+          'Accept': 'application/json, text/plain, */*',
+          'Content-Type': 'application/json'
+        }
+      })
+          // const updatedData = [...this.state.expenses];
+          //   // const foundExpense =
+          //   //   this.state.expenses.findIndex(expense =>
+          //   //   expense._id === id)
+              const copyExpenses =
+               [...this.state.expenses]
+               copyExpenses[foundExpense] = updatedData
+               console.log(updatedData)
+               this.setState(expense)
+        }catch(e){
+            console.error(e)
+        }
+    }
+
 
   showExpenses(event, index) {
     event.preventDefault();
@@ -80,6 +94,15 @@ class App extends React.Component {
       showExpenses: true,
       selectedExpense: expense
     });
+  }
+
+  editExpense(event, index) {
+      event.preventDefault();
+      const expense = this.state.expenses[index];
+      this.setState({
+          editExpense: true,
+          selectedExpense: expense
+      })
   }
 
   async deleteExpense (id, i){
@@ -120,7 +143,9 @@ class App extends React.Component {
           <NewExpenses handleExpenseAdded={this.handleExpenseAdded} data={this.state.data} handleCancel={this.handleCancel} />
         ) : this.state.showExpenses ? (
           <ShowExpenses expense={this.state.selectedExpense} handleBack={this.handleCancel} />
-        ) : (
+      ) : this.state.editExpenses ? (
+          <EditExpenses expense={this.state.selectedExpense} handleCancel={this.handleCancel} handleSubmit={this.handleEditExpense} />
+      ) : (
           <div>
             <div className="main-list">
               <table className="table table-warning">
@@ -152,9 +177,9 @@ class App extends React.Component {
                         <td className="text-right mb-3">
                           <button
                             className="btn btn-info"
-                            onClick={() => {
-                              this.handleEditExpense();
-                            }}
+                            onClick={event =>
+                              this.handleEditExpense(event, currentIndex)
+                            }
                           >
                             <i className="fa fa-edit"></i>
                           </button>
