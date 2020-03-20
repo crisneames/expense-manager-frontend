@@ -1,8 +1,9 @@
 import React from "react";
 import BarChart from "./components/BarChart.js";
 import CurrencyFormat from "react-currency-format";
-import NewExpenses from "./components/NewExpenses";
+import NewExpenses from "./components/newExpenses";
 import ShowExpenses from "./components/showExpenses";
+import EditExpense from "./components/editExpenses";
 
 import "./App.css";
 
@@ -30,7 +31,7 @@ class App extends React.Component {
     this.handleExpenseAdded = this.handleExpenseAdded.bind(this);
     this.handleCancel = this.handleCancel.bind(this);
     this.handleAddExpense = this.handleAddExpense.bind(this);
-    this.handleEditExpense = this.handleEditExpense.bind(this);
+    this.handleEditSubmit = this.handleEditSubmit.bind(this);
     this.editExpense = this.editExpense.bind(this);
     this.deleteExpense = this.deleteExpense.bind(this);
     this.showExpenses = this.showExpenses.bind(this);
@@ -91,27 +92,27 @@ class App extends React.Component {
       this.setState({
           foundExpense: expense
        });
-      try {
-          let response = await fetch(`${baseURL}/expense/${bookmark._id}`, {
-        body: JSON.stringify(bookmark),
-        method: 'PUT',
-        headers: {
-          'Accept': 'application/json, text/plain, */*',
-          'Content-Type': 'application/json'
-        }
-      })
-          // const updatedData = [...this.state.expenses];
-          //   // const foundExpense =
-          //   //   this.state.expenses.findIndex(expense =>
-          //   //   expense._id === id)
-              const copyExpenses =
-               [...this.state.expenses]
-               copyExpenses[foundExpense] = updatedData
-               console.log(updatedData)
-               this.setState(expense)
-        }catch(e){
-            console.error(e)
-        }
+      // try {
+      //     let response = await fetch(`${baseURL}/expense/${bookmark._id}`, {
+      //   body: JSON.stringify(expense),
+      //   method: 'PUT',
+      //   headers: {
+      //     'Accept': 'application/json, text/plain, */*',
+      //     'Content-Type': 'application/json'
+      //   }
+      // })
+      //     // const updatedData = [...this.state.expenses];
+      //     //   // const foundExpense =
+      //     //   //   this.state.expenses.findIndex(expense =>
+      //     //   //   expense._id === id)
+      //         const copyExpenses =
+      //          [...this.state.expenses]
+      //          copyExpenses[foundExpense] = updatedData
+      //          console.log(updatedData)
+      //          this.setState(expense)
+      //   }catch(e){
+      //       console.error(e)
+      //   }
     }
 
 
@@ -132,7 +133,7 @@ class App extends React.Component {
           selectedExpense: expense
       })
   }
-  
+
   async deleteExpense(id, i) {
     alert("Noooooooo!");
     console.log("I made a delete request to here:", `${baseURL}/expense/${id}`);
@@ -175,7 +176,7 @@ class App extends React.Component {
         ) : this.state.showExpenses ? (
           <ShowExpenses expense={this.state.selectedExpense} handleBack={this.handleCancel} />
       ) : this.state.editExpenses ? (
-          <EditExpenses expense={this.state.selectedExpense} handleCancel={this.handleCancel} handleSubmit={this.handleEditExpense} />
+          <EditExpense expense={this.state.selectedExpense} handleCancel={this.handleCancel} handleSubmit={this.handleEditExpense} />
       ) : (
           <div>
             <BarChart expenses={this.state.expenses} />

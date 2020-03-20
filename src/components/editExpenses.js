@@ -1,6 +1,6 @@
 import React from 'react';
 
-export default class EditExpenses extends React.Component {
+export default class EditExpense extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -14,11 +14,11 @@ export default class EditExpenses extends React.Component {
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
     }
-    componentDidMount(){
-        this.props.currentExpense.map(expense => {
-            this.state.expenses.push(expense)
-        })
-    }
+    // componentDidMount(){
+    //     this.props.currentExpense.map(expense => {
+    //         this.state.expenses.push(expense)
+    //     })
+    // }
 
     handleChange(event) {
         this.setState({ [event.currentTarget.id]: event.currentTarget.value });
@@ -34,8 +34,8 @@ export default class EditExpenses extends React.Component {
             cost: this.state.cost
         }
 }
-        handleEditExpense(expense, id) {
-            
+        handleEditExpense() {
+
             this.state.expenses = [...this.state.expenses]
                 const expense = {
                       date: this.state.date,
